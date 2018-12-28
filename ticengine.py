@@ -1,6 +1,12 @@
 from collections import Counter
+import random as r
 BOARD_WIDTH = 3
 BOARD_HEIGHT = 3
+
+def randomAi(board):
+        x,y = r.randint(0,2), r.randint(0,2)
+        return(x,y)
+
 
 def newBoard():
     board = []
@@ -46,7 +52,10 @@ def rows(board):
     rows = []
     for i in range(3):
         rows.append(board[i][:])
-        rows.append(board[:][i])
+        row = []
+        for j in range(3):
+            row.append(board[j][i])
+        rows.append(row)
     row = []
     row.append(board[0][0])
     row.append(board[1][1])
@@ -80,21 +89,21 @@ render(board)
 print("player 1 is 'X' , player 2 is 'O' ")
 while(count):
         status = False
+        count += 1
         while(not status):
-            x = input("enter x coordinate")
-            y = input("enter y coordinate")
+            (x,y) = randomAi(board)
             if(playerFlag == True):
                 status = makeMove(board, 'X', [x,y])
             else:
                 status = makeMove(board, 'O', [x,y])
-        playerFlag = not playerFlag
-        count += 1
-        render(board)
-        columns = rows(board)
-        (winner  ,winStatus) = win(columns)
-        if(winStatus == True):
-            print("There is winner :" + winner)
-            break
+            playerFlag = not playerFlag
+            render(board)
+            columns = rows(board)
+            (winner  ,winStatus) = win(columns)
+            if(winStatus == True):
+                print("There is winner :" + winner)
+                count = 0
+                break
         if(count == 10):
             print("it is a draw")
             count = 0
