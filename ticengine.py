@@ -3,17 +3,38 @@ import random as r
 BOARD_WIDTH = 3
 BOARD_HEIGHT = 3
 
+referance = [1,2,3,4,5,6,7,8,9]
+
 def randomAi(board):
         x,y = r.randint(0,2), r.randint(0,2)
         return(x,y)
 
 
+def winningMove(board, playerFlag):
+    if(playerFlag == True):
+        player = 'X'
+        enemy ='O'
+    else:
+        player = 'O'
+        enemy ='X'
+    columns = rows(board)
+    for c in columns:
+        countPlayer = Counter(c)[player]
+        countEnemy = Counter(c)[enemy]
+        if(countPlayer == 2 and countEnemy == 0):
+            for i in range(3):
+                if(c[i] not in ['X','O']):
+                    return c[i]
+    return None
+
 def newBoard():
     board = []
+    count = 1
     for i in range(BOARD_WIDTH):
         column =[]
         for j in range(BOARD_HEIGHT):
-            column.append(None)
+            column.append(count)
+            count += 1
         board.append(column)
     return board
 
@@ -25,22 +46,17 @@ def render(board):
         for x in range(BOARD_WIDTH):
             row.append(board[x][y])
         rows.append(row)
-    print('- - - -')
-    print('  0 1 2')
     i = 0
     for r in rows:
         printable = ' '
         for element in r:
-            if(element == None):
-                 printable += '  '
-            else:
-                printable += element + ' '
-        print(str(i) + printable)
+                printable += str(element) + ' '
+        print( printable)
         i += 1
 
 
 def makeMove(board, player, move):
-    if(board[move[0]][move[1]] is not None):
+    if(board[move[0]][move[1]] not in referance):
         print("illegal move! Try Again!!")
         return False
     else:
@@ -91,6 +107,10 @@ while(count):
         status = False
         count += 1
         while(not status):
+            winGame = winningMove(board, playerFlag)
+            if(winGame != None):
+                print('Play at:' + str(winGame))
+            enter = input('press enter to continue')
             (x,y) = randomAi(board)
             if(playerFlag == True):
                 status = makeMove(board, 'X', [x,y])
